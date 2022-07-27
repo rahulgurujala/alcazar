@@ -75,9 +75,7 @@ class Table:
 
     def __getattribute__(self, key):
         _data = super().__getattribute__('_data')
-        if key in _data:
-            return _data[key]
-        return super().__getattribute__(key)
+        return _data[key] if key in _data else super().__getattribute__(key)
 
     def __setattr__(self, key, value):
         super().__setattr__(key, value)
@@ -114,7 +112,7 @@ class Table:
                 values.append(getattr(self, name))
                 placeholders.append('?')
             elif isinstance(field, ForeignKey):
-                fields.append(name + "_id")
+                fields.append(f"{name}_id")
                 values.append(getattr(self, name).id)
                 placeholders.append('?')
 
@@ -134,7 +132,7 @@ class Table:
             if isinstance(field, Column):
                 fields.append(name)
             if isinstance(field, ForeignKey):
-                fields.append(name + "_id")
+                fields.append(f"{name}_id")
 
         sql = SELECT_ALL_SQL.format(name=cls.__name__.lower(), fields=", ".join(fields))
 
@@ -148,7 +146,7 @@ class Table:
             if isinstance(field, Column):
                 fields.append(name)
             if isinstance(field, ForeignKey):
-                fields.append(name + '_id')
+                fields.append(f'{name}_id')
 
         sql = SELECT_WHERE_SQL.format(name=cls.__name__.lower(), fields=", ".join(fields))
         params = [id]
@@ -166,7 +164,7 @@ class Table:
                 fields.append(name)
                 values.append(getattr(self, name))
             elif isinstance(field, ForeignKey):
-                fields.append(name + "_id")
+                fields.append(f"{name}_id")
                 values.append(getattr(self, name).id)
 
         values.append(getattr(self, 'id'))

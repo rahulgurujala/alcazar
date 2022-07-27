@@ -27,5 +27,5 @@ def test_middleware_methods_are_called(app, client):
 
     client.get(url('/'))
 
-    assert process_request_called is True
-    assert process_response_called is True
+    assert process_request_called
+    assert process_response_called
