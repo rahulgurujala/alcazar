@@ -52,10 +52,10 @@ class Alcazar:
     def _handle_exception(self, request, response, exception):
         if self._exception_handler is not None:
             self._exception_handler(request, response, exception)
-        else:
-            if self._debug is False:
-                raise exception
+        elif self._debug is False:
+            raise exception
 
+        else:
             debug_exception_handler(request, response, exception)
 
     def template(self, name, context=None):

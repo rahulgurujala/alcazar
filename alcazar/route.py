@@ -18,20 +18,17 @@ class Route:
 
     def match(self, request_path):
         result = parse(self._path_pattern, request_path)
-        if result is not None:
-            return True, result.named
-
-        return False, None
+        return (True, result.named) if result is not None else (False, None)
 
     def handle_request(self, request, response, **kwargs):
         if inspect.isclass(self._handler):
             handler = getattr(self._handler(), request.method.lower(), None)
             if handler is None:
                 raise HTTPError(status=HTTPStatus.METHOD_NOT_ALLOWED)
-        else:
-            if request.method not in self._methods:
-                raise HTTPError(status=HTTPStatus.METHOD_NOT_ALLOWED)
-
+        elif request.method in self._methods:
             handler = self._handler
+
+        else:
+            raise HTTPError(status=HTTPStatus.METHOD_NOT_ALLOWED)
 
         handler(request, response, **kwargs)
